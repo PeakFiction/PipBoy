@@ -5,3 +5,6 @@ class Item(models.Model):
     name = models.CharField(max_length=255)
     amount = models.IntegerField()
     description = models.TextField()
+    description = models.TextField()
+    version = models.TextField()
+    releasedate = models.TextField()
