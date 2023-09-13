@@ -31,7 +31,7 @@ Once I'm done, I checked for some other mistakes I might have missed by using th
 ## Diagram
 <img src="/assets/DiagramPBD.jpg">
 
-<br />
+<br/>
 ## What is the Purpose of a Virtual Environment?
 You may work on Python projects with separated dependencies by using a virtual environment, which is a self-contained directory that includes a Python interpreter and a selection of libraries. A virtual environment's main function is to manage and isolate project-specific dependencies and configurations, guaranteeing that several projects may each have their own distinct Python environment free from conflict. Here are some major arguments in favour of virtual environments:
 
