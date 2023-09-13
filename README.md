@@ -1,5 +1,5 @@
 # My Deployed App:
-https://github.com/PeakFiction/PipBoy
+https://pipboy.adaptable.app/main
 
 
 # Detailed Step-By-Step
@@ -29,7 +29,8 @@ I then go back to the urls.py in the main directory to configure the URL such th
 Once I'm done, I checked for some other mistakes I might have missed by using the "python manage.py runserver" command and opening the local server using "http://localhost:8000/main/". If all is good, then I upload the local repository to my github repository by using the 4 mantras of git. Connected my Github account to adaptable.io, and deployed the app. And as per the tutorial, we'll be using Python's App Template, PostGreSQL, and have some custom Start Commands as well.
 
 ## Diagram
-<img src="assets/DiagramPBD.jpg>
+<img src="/assets/DiagramPBD.jpg">
+
 <br />
 ## What is the Purpose of a Virtual Environment?
 You may work on Python projects with separated dependencies by using a virtual environment, which is a self-contained directory that includes a Python interpreter and a selection of libraries. A virtual environment's main function is to manage and isolate project-specific dependencies and configurations, guaranteeing that several projects may each have their own distinct Python environment free from conflict. Here are some major arguments in favour of virtual environments:
