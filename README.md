@@ -87,3 +87,61 @@ Differences:
 
 Modern client-side apps frequently employ MVVM, particularly those developed using frameworks like Angular, Vue.js, or Knockout.js.
 To accomplish a separation of concerns and produce more tested and manageable code, MVVM's ViewModel is in charge of making data and commands available to the View.
+
+
+
+# Assignment 3 README.md:
+
+## What is the difference between POST form and GET form in Django?
+POST Form:
+
+HTTP Method: POST
+Purpose: Used to submit data to the server for processing, typically used when the form is used to create or update resources on the server.
+Data in Request: Form data is sent in the request body, not in the URL.
+Security: More secure for sensitive data as it doesn't expose data in the URL.
+Length Limitation: No strict length limitation on data, but server and browser may impose their own limits.
+Idempotent: Not idempotent, meaning multiple identical POST requests may have different effects on the server.
+
+GET Form:
+
+HTTP Method: GET
+Purpose: Used to request data from the server and include parameters in the URL, typically used for searching or filtering data on the server.
+Data in Request: Form data is appended to the URL as query parameters.
+Security: Less secure for sensitive data because data is visible in the URL.
+Length Limitation: Limited by the maximum URL length, which varies depending on the browser and server.
+Idempotent: Idempotent, meaning multiple identical GET requests should have the same effect on the server (no side effects).
+
+## What are the main differences between XML, JSON, and HTML in the context of data delivery?
+
+XML, JSON, and HTML are three distinct data formats employed for delivering data, each serving unique purposes with distinct characteristics.
+
+XML, or Extensible Markup Language, is a versatile and adaptable format utilized for organizing and storing data. It offers high customizability, enabling users to define intricate document structures through user-defined tags. XML is commonly employed when structured data needs to be exchanged between different systems, making it suitable for scenarios requiring data to be both human-readable and machine-readable. However, XML can be verbose due to its tag-based syntax, potentially resulting in larger file sizes when compared to formats like JSON. Additionally, parsing XML can be computationally more demanding.
+
+On the contrary, JSON, short for JavaScript Object Notation, is a lightweight and easily readable format for data delivery. It excels at representing data in a manner closely resembling data structures in many programming languages, making it popular for web APIs and data exchange between web clients and servers. JSON is concise, leading to smaller data payloads in comparison to XML. Moreover, it is simpler for both humans and machines to parse. Nevertheless, JSON is less versatile than XML when it comes to defining complex document structures, and it lacks some of the self-documentation features found in XML.
+
+HTML, or Hypertext Markup Language, is primarily utilized for structuring and presenting content in web browsers. Although it is not a data interchange format like XML and JSON, it plays a crucial role in data delivery on the web. HTML is designed for crafting structured documents that encompass text, multimedia, hyperlinks, and more, presenting information to users in an aesthetically pleasing manner. HTML documents can also incorporate JSON or XML data within them, often as part of a web page's content. This allows for embedding structured data, such as configuration settings or dynamic content, directly into web pages for client-side processing.
+
+In summary, XML is a highly customizable and extensible format suitable for structured data exchange, JSON is a lightweight and easy-to-parse format often used for web APIs, and HTML is primarily employed for structuring and presenting content on the web but can also include JSON or XML data within web pages. The choice of format depends on the specific requirements of data delivery and the intended use case.
+
+##  Why is JSON often used in data exchange between modern web applications?
+
+##  Explain how you implemented the checklist above step-by-step (not just following the tutorial).
+
+### Create a form input to add a model object to the previous app.
+Inside the main folder, I created a folder named forms.py, which imports my ModelForm, and Product. And added a ProductForm function, and in the fields section I added a few attributes that suit the types of items that I will be storing in the database. I then added some more imports in views.py in the main folder and a new function called create_product that takes requests as an argument, the usage of this function is to create a new ProductForm. I also modified the show_main function in views.py to show the table of added items. I also added more imports from the functions that I've created previously, like create_product. I also added the path list to the create_product in urls.py. So that there's something to look at, I added a new .html file that will be used to show the Add New Item Page for the User, not only that, but I changed the main.html so that it can accommodate new buttons that will lead to the new create_product.html
+
+### Add 5 views to view the added objects in HTML, XML, JSON, XML by ID, and JSON by ID formats.
+For this one, I added the necessary imports in views.py in the main folder, and added show_xml function, and a show_json function. These functions are used to show the XML and JSON of the data that's stored. Next I create a function that is similar to show_xml and show_json, the only difference being is showing the data by its ID. 
+
+### Create URL routing for each of the views added in point 2
+To do this I routed the proper paths in urls.py. Such that when you go to /xml or /json, it will show the XML or JSON of the data. In addition, if you do xml/[id] or json/[id], it will show the XML or JSON (depending on the link) of the specific data with that ID. Before that, I also imported the necessary functions that was made in the previous step in the urls.py file.
+
+
+
+## Access the five URLs in point 2 using Postman, take screenshots of the results in Postman and add them to README.md.
+<img src="/assets/viewAsHTML.png">
+<img src="/assets/viewAsJSON.png">
+<img src="/assets/viewAsXML.png">
+<img src="/assets/viewAsJSONID.png">
+<img src="/assets/viewAsXMLID.png">
+
