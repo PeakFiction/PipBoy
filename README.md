@@ -124,6 +124,28 @@ HTML, or Hypertext Markup Language, is primarily utilized for structuring and pr
 In summary, XML is a highly customizable and extensible format suitable for structured data exchange, JSON is a lightweight and easy-to-parse format often used for web APIs, and HTML is primarily employed for structuring and presenting content on the web but can also include JSON or XML data within web pages. The choice of format depends on the specific requirements of data delivery and the intended use case.
 
 ##  Why is JSON often used in data exchange between modern web applications?
+JSON (JavaScript Object Notation) is often used in data exchange between modern web applications for several key reasons:
+
+1. Human-Readable Format: JSON is a human-readable format, making it easy for developers to work with and debug. Its structure resembles JavaScript objects, which are widely used in web development, making it familiar to many developers.
+
+2. Lightweight: JSON is a lightweight data interchange format. It doesn't include a lot of unnecessary characters, which means it reduces the data transfer overhead, making it efficient for transmitting data over networks, especially in situations where bandwidth is limited or costly.
+
+3. Language Agnostic: JSON is not tied to any particular programming language. It can be used with virtually any modern programming language because parsers and libraries for JSON are readily available for most programming languages. This language-agnostic nature makes it a popular choice for web services that need to communicate with different technologies.
+
+4. Wide Support: JSON is supported by a wide range of programming languages, databases, and tools. Most modern web development frameworks and libraries include built-in support for working with JSON, simplifying the process of encoding and decoding data.
+
+5. Easy to Convert: JSON can be easily converted to and from native data structures in most programming languages. This makes it straightforward to serialize data on the server, transmit it to a client, and deserialize it for use in the client-side code.
+
+6. JavaScript Integration: Since JSON's syntax is based on JavaScript object notation, it can be directly consumed by JavaScript on the client-side, making it a natural choice for AJAX requests and data manipulation in web applications.
+
+7. Standardized: JSON is an open standard specified by RFC 8259, which means there are clear guidelines for its structure and usage. This standardization ensures that JSON data can be reliably exchanged between different systems.
+
+8. Security: JSON is considered safer than other data interchange formats like XML, which can carry security vulnerabilities such as entity expansion attacks. JSON does not support entities or complex structures like XML, reducing the risk of security issues.
+
+9. Web APIs: Many web services and APIs use JSON as their preferred format for exchanging data due to its efficiency and compatibility with web technologies. This makes it easy for developers to integrate data from different sources into their web applications.
+
+In summary, JSON's simplicity, efficiency, wide support, and human-readability make it a popular choice for data exchange between modern web applications, enabling seamless communication between various components of web-based systems.
+
 
 ##  Explain how you implemented the checklist above step-by-step (not just following the tutorial).
 
@@ -144,4 +166,72 @@ To do this I routed the proper paths in urls.py. Such that when you go to /xml o
 <img src="/assets/viewAsXML.png">
 <img src="/assets/viewAsJSONID.png">
 <img src="/assets/viewAsXMLID.png">
+
+# Assignment 4 README.md:
+
+## What is UserCreationForm in Django? Explain its advantages and disadvantages.
+UserCreationForm is a built-in user authentication system that comes with Django. It’s designed to handle user registration i.e. usernames, passwords, etc. In a way, it simplifies the process of creating user accounts in web applications
+
+The advantages of UserCreationForm are:
+Ease of Use — it instantly provides a ready-made form class with the necessary fields to create a user account, which saves time for the developers
+
+Integration with Authentication System — The form integrates easily with Django’s authentication system, which means password hashing, user account creation, and other security-related aspects is being automatically done.
+
+Customisable — Even though Django provides default values and fields that makes it easier for beginners, you can easily customise it to include much more fields by creating a custom form class
+
+Validation — Password validation is included into the form to make sure users submit secure passwords and that the password and password confirmation boxes are same.
+
+The disadvantages of UserCreationForm are:
+
+Limited to User Model — UserCreationForm is suitable for simple user registration, however it was created exclusively for the User model that comes with Django. You might need to design a unique registration form that adheres to the fields and specifications of your custom user model if you're using one.
+
+Lack of Email Verification — Email verification is not included by default in UserCreationForm. You must implement this independently if your application requires email confirmation as a requirement for registration.
+
+Minimal User Data — 	UserCreationForm only offers a minimal set of fields (often only a username and password) and excludes any user profile data. You will need to either extend the form or add a separate profile creation phase if your application wants to collect more user information during registration.
+
+Limited Styling — The form has the required functionality, but it doesn't have a lot of styling or front-end elements. In order to modify the form's appearance to match the style of your application, you'll need to create templates and add CSS styles.
+
+## What is the difference between authentication and authorization in the Django application? Why are both important?
+Authentication refers to the process of verifying the identity of a user, ensuring that they are who they claim to be. In a Django application, this typically involves user registration, login, and password management. Django provides a built-in authentication system that handles user authentication seamlessly, allowing users to create accounts, log in, and maintain their sessions securely.
+
+Authorization, on the other hand, deals with determining what actions a user is allowed to perform once they are authenticated. It defines the permissions and access control rules that dictate which parts of the application a user can access and what operations they can perform. Django's authorization system revolves around defining user roles, assigning permissions to these roles, and then checking these permissions before allowing a user to carry out specific actions or access certain views.
+
+Authentication and authorization are crucial in web applications because they collectively ensure the security, privacy, and compliance of user data while allowing for customizable access control tailored to different user roles.
+
+## What are cookies in a website? How does Django use cookies to manage user session data?
+Cookies are little data files that a website stores on a user's computer. They frequently serve as storage for data related to a user's session or preferences. By saving a session ID in a cookie, Django manages user session data. Django establishes a session for each user when they log in, assigns a special session ID, and keeps this ID in a cookie on the user's device. By doing so, Django is able to recognise the user on subsequent requests and obtain their session data from the server, enabling the maintenance of user sessions across many web pages.
+
+## Are cookies secure to use? Is there a potential risk to be aware of?
+For storing non-sensitive data like session IDs or user preferences, cookies are often secure. However, there could be problems connected to cookies. If not handled appropriately, they may be susceptible to attacks like cross-site scripting (XSS). Additionally, if cookies are sent via unencrypted connections (HTTP instead of HTTPS), they may be stolen. The use of HTTPS and making sure that cookies holding sensitive data are securely encrypted and guarded against unauthorised access are only two examples of secure procedures that developers must put into practice.
+
+## Explain how you implemented the checklist above step-by-step (not just following the tutorial).
+
+### Implement registration, login, and logout functions to allow users to access the previous application.
+To implement registration, login, and logout functionality, I followed a structured approach. First, I designed a registration form and associated function. Within the views.py file, I introduced the register function, alongside essential imports such as UserCreationForm. This function dynamically generates a registration form, and upon submission, creates a new user account. 
+
+To complement this, I crafted a dedicated HTML page named register.html. This page serves as the entry point for individuals looking to create a new user account. I also integrated this page into the application's URL routing by specifying the corresponding path in urlpatterns within the urls.py file and importing the relevant function from views.py.
+
+For the login functionality, I employed a similar approach. I imported the necessary functions into views.py, establishing a login_user function responsible for authenticating user credentials received through a request. A corresponding HTML page, `ogin.html, was designed to facilitate user login. Once again, I ensured that the URL routing and function imports were appropriately configured in urls.py.
+
+The logout functionality was implemented in a comparable fashion. The logout_user function was created, and a 'Log Out' button was integrated directly into the main page instead of introducing a new HTML file. To complete this, I included the required imports and URL paths in urls.py.
+
+Furthermore, to enhance security, I implemented a prerequisite for users to log in before accessing the main page. This was achieved by applying a decorator atop the show_main function in views.py, utilizing the login_required decorator from Django's decorator library. This measure ensures that users must authenticate themselves before gaining access to the main page, enhancing the overall security of the application.
+
+### Connect Item model with User.
+To establish a connection between each item model and its respective user creator, I implemented a straightforward process. Initially, in the models.py file, I imported the 'user' module from the Django library and incorporated a 'user' attribute within the 'Product' class. This attribute was configured as a ForeignKey, ensuring that each item became associated with the user responsible for its creation.
+
+Subsequently, I proceeded to enhance the 'create_product' function. This modification ensured that every item generated through this function was automatically linked to the currently authenticated user. Additionally, I made adjustments to the 'show_main' function, enabling it to display information about the presently logged-in User, providing a seamless user experience by establishing these essential connections between users and their created items.
+
+### Create two user accounts with three dummy data entries for each account using the model previously created in the application.
+<img src="/assets/peakfictionuser.png">
+<img src="/assets/xlntuser.png">
+
+### Display the information of the logged-in user, such as their username, and applying cookies, such as last login, on the main application page.
+
+
+
+
+
+
+
 
