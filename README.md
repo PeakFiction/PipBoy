@@ -228,7 +228,11 @@ Subsequently, I proceeded to enhance the 'create_product' function. This modific
 
 ### Display the information of the logged-in user, such as their username, and applying cookies, such as last login, on the main application page.
 
+To achieve this functionality, I made several improvements within the codebase. In the views.py file, I introduced the necessary imports, including datetime, reverse, and HttpResponseRedirect. Within the login_user function, I enhanced it to record the user's most recent login timestamp. Additionally, in the show_main function, I expanded the context by introducing a new item called 'last_login.' This item retrieves the user's last login time from the stored cookies.
 
+To ensure that this information remains accurate, I also made corresponding adjustments within the logout_user function. Here, I implemented logic to remove the last login cookie when a user logs out.
+
+To present this valuable data to the user, I refined the main.html template, incorporating a section to display the 'Last Login' session time for the currently authenticated user. Finally, I conducted necessary migrations to ensure that all changes in the models were seamlessly integrated into the application, resulting in a fully functional and user-friendly solution.
 
 
 
