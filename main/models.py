@@ -7,6 +7,5 @@ class Product(models.Model):
     name = models.CharField(max_length=255)
     value = models.IntegerField()
     description = models.TextField()
-    version = models.TextField()
-    releasedate = models.TextField()
+    weight = models.IntegerField()
     user = models.ForeignKey(User, on_delete=models.CASCADE)
