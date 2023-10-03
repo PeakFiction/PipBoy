@@ -4,31 +4,130 @@
     <title>Register</title>
 {% endblock meta %}
 
-{% block content %}  
+{% block content %}
+{% load static %}
+<link rel="stylesheet" type="text/css" media="screen" href="{% static 'css/bgcolor.css' %}">
+<style>
+    body {
+        font-family: 'ShareTech Mono', monospace, Arial, sans-serif;
+    }
 
-<div class = "login">
-    
-    <h1>Register</h1>  
+    .login {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+    }
 
-        <form method="POST" >  
-            {% csrf_token %}  
-            <table>  
-                {{ form.as_table }}  
-                <tr>  
-                    <td></td>
-                    <td><input type="submit" name="submit" value="Daftar"/></td>  
-                </tr>  
-            </table>  
-        </form>
+    .login form {
+        text-align: center;
+    }
 
-    {% if messages %}  
-        <ul>   
-            {% for message in messages %}  
-                <li>{{ message }}</li>  
-                {% endfor %}  
-        </ul>   
+    .form-group {
+        margin-bottom: 20px;
+        position: relative;
+    }
+
+    .icon {
+        width: 50px;
+        height: 50px;
+        margin-bottom: 20px;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+        background-color: lightgreen;
+        width: 100%;
+        padding: 10px;
+        border: none;
+        position: relative; /* Add relative positioning to the text fields */
+    }
+
+    .register_btn {
+        background-color: green;
+        color: white;
+        font-weight: bold;
+        padding: 10px 20px;
+        border: none;
+        cursor: pointer;
+    }
+
+    .register_btn:hover {
+        background-color: darkgreen;
+    }
+
+    /* Style for error messages */
+    .error-message {
+        color: red;
+        font-weight: bold;
+    }
+
+    /* Updated tooltip positioning for username and password */
+    .form-group[data-tooltip]::after {
+        content: attr(data-tooltip);
+        position: absolute;
+        background-color: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 5px;
+        border-radius: 5px;
+        font-size: 12px;
+        max-width: 1000px; /* Increase the maximum width of the tooltip */
+        text-align: center;
+        visibility: hidden;
+        opacity: 0;
+        transition: opacity 0.3s, visibility 0.3s;
+    }
+
+    /* Position the username tooltip on the right side of the text field */
+    .username-tooltip::after {
+        left: 100%; /* Position to the right of the text field */
+        top: 50%; /* Vertically centered */
+        transform: translateY(-50%);
+    }
+
+    /* Position the password tooltip on the right side of the text field */
+    .password-tooltip::after {
+        left: 100%; /* Position to the right of the text field */
+        top: 50%; /* Vertically centered */
+        transform: translateY(-50%);
+    }
+
+    .form-group:hover::after {
+        visibility: visible;
+        opacity: 1;
+    }
+</style>
+
+<div class="login">
+    <img src="{% static 'main/vaultboyicon.png' %}" alt="Icon" class="icon">
+    <form method="POST" action="">
+        {% csrf_token %}
+        <div class="form-group username-tooltip" data-tooltip="Required: ≤ 150 characters, use only letters, digits, @/./+/-/_.">
+            <input type="text" name="username" placeholder="Username" class="form-control">
+        </div>
+
+        <div class="form-group password-tooltip" data-tooltip="Ensure your password is not too similar to your personal info, 
+        has at least 8 characters, avoids common choices, and isn't purely numeric.">
+            <input type="password" name="password1" placeholder="Password" class="form-control">
+        </div>
+
+        <div class="form-group">
+            <input type="password" name="password2" placeholder="Confirm Password" class="form-control">
+        </div>
+
+        <div class="form-group">
+            <button class="btn register_btn" type="submit">Register</button>
+        </div>
+    </form>
+
+    {% if messages %}
+        <ul>
+            {% for message in messages %}
+                <li class="{% if message.tags == 'success' %}success-message{% else %}error-message{% endif %}">{{ message }}</li>
+            {% endfor %}
+        </ul>
     {% endif %}
-
-</div>  
+</div>
 
 {% endblock content %}

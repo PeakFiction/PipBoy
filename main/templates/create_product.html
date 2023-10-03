@@ -1,19 +1,96 @@
-{% extends 'base.html' %} 
+{% extends 'base.html' %}
 
 {% block content %}
-<h1>Add New Product</h1>
+{% load static %}
+<link rel="stylesheet" type="text/css" media="screen" href="{% static 'css/bgcolor.css' %}">
+<style>
+    body {
+        font-family: 'ShareTech Mono', monospace, Arial, sans-serif;
+        color: green; /* Set the default text color to green */
+    }
 
-<form method="POST">
-    {% csrf_token %}
-    <table>
-        {{ form.as_table }}
-        <tr>
-            <td></td>
-            <td>
-                <input type="submit" value="Add Product"/>
-            </td>
-        </tr>
-    </table>
-</form>
+    .login {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+    }
+
+    .login h1 {
+        color: green; /* Set the text color of h1 to green */
+        font-size: 24px; /* Increase the font size of the title */
+    }
+
+    .login form {
+        text-align: center;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+        position: relative;
+    }
+
+    input[type="text"],
+    input[type="password"],
+    input[type="number"], /* Use type="number" for numeric input fields */
+    textarea { /* Apply styles to textareas for descriptions */
+        background-color: lightgreen;
+        width: 100%;
+        padding: 10px;
+        border: none;
+        position: relative;
+        color: black; /* Set the text color of input fields to black */
+        font-family: 'ShareTech Mono', monospace, Arial, sans-serif; /* Use monospace font */
+    }
+
+    /* Remove borders from text input fields */
+    input[type="text"],
+    input[type="password"],
+    input[type="number"] {
+        border: none;
+    }
+
+    input[type="submit"] {
+        background-color: green;
+        color: white;
+        font-weight: bold;
+        padding: 10px 20px;
+        border: none;
+        cursor: pointer;
+        margin-top: 20px; /* Add margin to the button for spacing */
+    }
+
+    input[type="submit"]:hover {
+        background-color: darkgreen;
+    }
+</style>
+
+<div class="login">
+    <h1>Add New Item</h1>
+
+    <form method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+            <input type="text" name="name" placeholder="Name"> <!-- Use placeholder text instead of label -->
+        </div>
+
+        <div class="form-group">
+            <input type="number" name="value" placeholder="Value">
+        </div>
+
+        <div class="form-group">
+            <textarea name="description" placeholder="Description"></textarea> <!-- Use textarea for description -->
+        </div>
+
+        <div class="form-group">
+            <input type="number" name="weight" placeholder="Weight">
+        </div>
+
+        <div class="form-group">
+            <input type="submit" value="Add Item">
+        </div>
+    </form>
+</div>
 
 {% endblock %}

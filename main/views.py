@@ -19,7 +19,16 @@ from django.urls import reverse
 # Create your views here.
 @login_required(login_url='/login')
 def show_main(request):  
-    item = Product.objects.filter(user = request.user)
+    items = Product.objects.filter(user=request.user).order_by('-id')  # Newest item first
+
+    # Mark the newest item as is_new=True and all others as is_new=False
+    if items:
+        newest_item = items[0]
+        newest_item.is_new = True
+        newest_item.save()
+        for item in items[1:]:
+            item.is_new = False
+            item.save()
 
     context = {
         'AppName': 'Pip-Boy!',
@@ -28,8 +37,8 @@ def show_main(request):
         'description': "From the innovative minds at Vault-Tec, we proudly present the Pip-Boy Inventory Manager, a cutting-edge web-based solution designed to enhance your post-apocalyptic survival experience. Just like its wrist-mounted predecessor, the Pip-Boy Inventory Manager offers seamless access to your crucial inventory data. Seamlessly navigate your stash of equipment, manage your consumables, and keep tabs on your quest progress, all from the comfort of your preferred device's web browser. Vault-Tec's commitment to user-friendly design ensures that you can effortlessly organize your post-apocalyptic life, whether it's keeping track of your precious bottle caps or maintaining your arsenal of weaponry. Surviving the wasteland has never been this organized, thanks to the Pip-Boy Inventory Manager—a technological marvel for the modern survivor.",
         'version': "Pip-Boy 3000 Mark IV Web Version",
         'releasedate': "2287",
-        'items': item,
-        'last_login': request.COOKIES['last_login'],
+        'items': items,
+        'last_login': request.COOKIES.get('last_login'),
     }
 
     return render(request, 'main.html', context)
@@ -40,11 +49,13 @@ def create_product(request):
     if form.is_valid() and request.method == "POST":
         product = form.save(commit=False)
         product.user = request.user
+        product.is_new = True  # Set the is_new attribute to True for newly added items
         product.save()
         return HttpResponseRedirect(reverse('main:show_main'))
 
     context = {'form': form}
     return render(request, "create_product.html", context)
+
 
 def show_xml(request):
     data = Product.objects.all()
@@ -63,16 +74,23 @@ def show_json_by_id(request, id):
     return HttpResponse(serializers.serialize("json", data), content_type="application/json")
 
 def register(request):
-    form = UserCreationForm()
-
     if request.method == "POST":
         form = UserCreationForm(request.POST)
         if form.is_valid():
             form.save()
             messages.success(request, 'Your account has been successfully created!')
             return redirect('main:login')
-    context = {'form':form}
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field.capitalize()}: {error}")
+    
+    else:
+        form = UserCreationForm()
+    
+    context = {'form': form}
     return render(request, 'register.html', context)
+
 
 def login_user(request):
     if request.method == 'POST':
@@ -117,3 +135,25 @@ def delete_product(request, id):
     product.delete()
     # Return to the main page
     return HttpResponseRedirect(reverse('main:show_main'))
+
+def show_about(request):
+    return render(request, 'about.html')
+
+def increment_item(request, id):
+    item = Product.objects.get(pk = id)
+    item.amount += 1
+    item.save()
+    return HttpResponseRedirect(reverse('main:show_main'))
+
+def decrement_item(request, id):
+    item = Product.objects.get(pk = id)
+    item.amount -= 1
+    if item.amount <= 0:
+        item.delete()
+        return HttpResponseRedirect(reverse('main:show_main'))
+    else:
+        item.save()
+        return HttpResponseRedirect(reverse('main:show_main'))
+
+
+

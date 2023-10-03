@@ -1,71 +1,250 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Pip-Boy! Inventory Manager Powered by Vault-Tec!</h1>
+<div class="pip-boy-container">
+    <h1>Pip-Boy! Inventory Manager Powered by Vault-Tec!</h1>
 
-...
-<h5>Name:</h5>
-<p>{{ name }}</p>
+    <div class="user-info">
+        <h5>Name:</h5>
+        <p>{{ name }}</p>
+    </div>
 
-<h5>Class:</h5>
-<p>{{ class }}</p>
+    <div class="inventory">
+        <div class="item-list">
+            <h2 id="item-list-heading">Item List</h2>
+            <ul>
+                {% for product in items %}
+                    <li>
+                        <a href="#" class="item-link" data-id="{{ product.pk }}">
+                            {{ product.name }}
+                            {% if product.is_new %}<span class="new-item-heart">♡</span>{% endif %}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
 
-<h5>Description: </h5>
-<p>{{ description }}</p>
+        <div class="item-details">
+            <h2>Item Details</h2>
+            <table>
+                <tr>
+                    <th>Name</th>
+                    <th>Value</th>
+                    <th>Description</th>
+                    <th>Weight</th>
+                    <th>Actions</th>
+                </tr>
+                {% for product in items %}
+                    <tr class="item-info" data-id="{{ product.pk }}">
+                        <td>{{ product.name }}</td>
+                        <td>{{ product.value }}</td>
+                        <td>{{ product.description }}</td>
+                        <td>{{ product.weight }}</td>
+                        <td class="item-actions">
+                            <a href="{% url 'main:edit_product' product.pk %}" class="edit-item-link">
+                                <button>EDIT</button>
+                            </a>
+                            <a href="{% url 'main:delete_product' product.pk %}" class="delete-item-link">
+                                <button>DROP</button>
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
 
-<h5>Version: </h5>
-<p>{{ version }} </p>
+    <!-- Add New Item Button -->
+    <div class="add-item-button">
+        <a href="{% url 'main:create_product' %}">
+            <button>Add New Item</button>
+        </a>
+    </div>
 
-<h5>Release Date: </h5>
-<p>{{ releasedate }} </p>
+    <div class="user-info">
+        <h5>Last login session: {{ last_login }}</h5>
+        <a href="{% url 'main:logout' %}">
+            <button>Logout</button>
+        </a>
+    </div>
+</div>
 
-<table>
-    <tr>
-        <th>Name</th>
-        <th>Value</th>
-        <th>Description</th>
-        <th>Weight</th>
-    </tr>
+<script>
+    // JavaScript to show item details on hover
+    const itemLinks = document.querySelectorAll('.item-link');
+    const itemInfos = document.querySelectorAll('.item-info');
+    const itemListHeading = document.getElementById('item-list-heading');
 
-    {% comment %} Below is how to show the product data {% endcomment %}
+    let isSortedAsc = true; // Initial sorting order is ascending
 
-    {% for product in items %}
-        <tr>
-            <td>{{product.name}}</td>
-            <td>{{product.value}}</td>
-            <td>{{product.description}}</td>
-            <td>{{product.weight}}</td>
-            <td>
-                <a href="{% url 'main:edit_product' product.pk %}">
-                    <button>
-                        Edit
-                    </button>
-                </a>
-                <a href="{% url 'main:delete_product' product.pk %}">
-                    <button>
-                        Delete
-                    </button>
-                </a>
-            </td>
-        </tr>
-    {% endfor %}
-</table>
+    itemListHeading.addEventListener('click', () => {
+        // Store the newly added item, if any
+        const newItem = document.querySelector('.new-item');
+        const ul = itemLinks[0].parentElement;
+        let newElement = null;
 
-<br />
+        if (newItem) {
+            // Remove the newly added item from the list
+            newElement = newItem.parentElement;
+            ul.removeChild(newElement);
+        }
 
-<a href="{% url 'main:create_product' %}">
-    <button>
-        Add New Item
-    </button>
-</a>
+        const sortedItems = Array.from(itemLinks).sort((a, b) => {
+            const textA = a.textContent.trim().toUpperCase();
+            const textB = b.textContent.trim().toUpperCase();
+            return isSortedAsc ? textA.localeCompare(textB) : textB.localeCompare(textA);
+        });
 
-<h5>Last login session: {{ last_login }}</h5>
+        // Clear the existing list
+        ul.innerHTML = '';
 
-<a href="{% url 'main:logout' %}">
-    <button>
-        Logout
-    </button>
-</a>
+        // Add sorted items back to the list
+        sortedItems.forEach(item => {
+            ul.appendChild(item.parentElement);
+        });
 
+        // Add the newly added item back to the list
+        if (newElement) {
+            ul.insertBefore(newElement, ul.firstChild);
+        }
+
+        // Toggle sorting order
+        isSortedAsc = !isSortedAsc;
+    });
+
+    itemLinks.forEach(link => {
+        link.addEventListener('mouseenter', () => {
+            const itemId = link.getAttribute('data-id');
+            itemInfos.forEach(info => {
+                if (info.getAttribute('data-id') === itemId) {
+                    info.style.display = 'table-row';
+                } else {
+                    info.style.display = 'none';
+                }
+            });
+        });
+    });
+</script>
+
+
+
+
+
+<style>
+    .pip-boy-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        font-family: monospace, Arial, sans-serif;
+        color: green;
+    }
+
+    h1 {
+        font-size: 24px;
+    }
+
+    .user-info {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    .inventory {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        padding: 20px;
+    }
+
+    .item-list {
+        flex: 1;
+        padding-right: 20px;
+        border-right: 1px solid green;
+    }
+
+    .item-list h2 {
+        font-size: 20px;
+        background-color: green; /* Add green background color */
+        color: white; /* Set text color to white */
+        padding: 5px 10px; /* Add padding for the box */
+        border-radius: 5px; /* Add rounded corners */
+        cursor: pointer; /* Add cursor style for clicking */
+    }
+
+    ul {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    .item-link {
+        text-decoration: none;
+        color: green;
+        font-size: 16px;
+        display: block;
+        margin-bottom: 10px;
+    }
+
+    .item-link:hover {
+        background-color: darkgreen;
+        padding: 5px;
+        border-radius: 5px;
+    }
+
+    .item-details {
+        flex: 2;
+        padding-left: 20px;
+    }
+
+    .item-details h2 {
+        font-size: 20px;
+        background-color: green; /* Add green background color */
+        color: white; /* Set text color to white */
+        padding: 5px 10px; /* Add padding for the box */
+        border-radius: 5px; /* Add rounded corners */
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th, td {
+        border: 1px solid green;
+        padding: 8px;
+        text-align: left;
+    }
+
+    .item-info {
+        display: none;
+    }
+
+    .item-actions {
+        margin-top: 10px;
+    }
+
+    .edit-item-link, .delete-item-link {
+        text-decoration: none;
+        margin-right: 10px;
+    }
+
+    button {
+        background-color: green;
+        color: white;
+        font-weight: bold;
+        padding: 5px 10px;
+        border: none;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: darkgreen;
+    }
+
+    /* Additional style for "new-item-heart" */
+    .new-item-heart {
+        color: red; /* You can change the color to your preference */
+        margin-left: 5px; /* Adjust the spacing as needed */
+    }
+</style>
+
+</div>
 {% endblock content %}
-

@@ -9,6 +9,11 @@ from main.views import login_user
 from main.views import logout_user
 from main.views import edit_product
 from main.views import delete_product
+from main.views import show_about
+from main.views import increment_item
+from main.views import decrement_item
+
+
 
 app_name = 'main'
 
@@ -23,7 +28,8 @@ urlpatterns = [
     path('login/', login_user, name='login'),
     path('logout/', logout_user, name='logout'),
     path('edit-product/<int:id>', edit_product, name='edit_product'),
-    path('delete/<int:id>', delete_product, name='delete_product'),  # adjust the function name
-
+    path('delete/<int:id>', delete_product, name='delete_product'),
+    path('about/', show_about, name='about'),
+    path('increment/<int:id>', increment_item, name='increment_item'),
 
 ]
