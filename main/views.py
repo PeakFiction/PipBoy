@@ -14,6 +14,9 @@ from django.contrib.auth import logout
 import datetime
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
+
 
 
 # Create your views here.
@@ -156,4 +159,29 @@ def decrement_item(request, id):
         return HttpResponseRedirect(reverse('main:show_main'))
 
 
+def get_product_json(request):
+    product_item = Product.objects.all()
+    return HttpResponse(serializers.serialize('json', product_item))
 
+@csrf_exempt
+
+def add_product_ajax(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        description = request.POST.get('description')
+        value = request.POST.get('value')
+        weight = request.POST.get('weight')
+        
+        # Perform any necessary validation or error handling here
+        
+        # Create a new Product instance
+        new_product = Product(name=name, description=description, value=value, weight=weight, user=request.user)
+        
+        # Save the new product to the database
+        new_product.save()
+        
+        # Return a success response
+        return JsonResponse({'message': 'Product created successfully'}, status=201)
+    
+    # Handle GET requests or other cases
+    return JsonResponse({'message': 'Invalid request method'}, status=400)

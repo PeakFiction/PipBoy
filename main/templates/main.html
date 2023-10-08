@@ -61,11 +61,51 @@
         </a>
     </div>
 
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProductModal" style="background-color: #00ee00; color: black; font-weight: bold; box-shadow: none; margin-top: 10px;" onmouseover="this.style.backgroundColor='#006400'" onmouseout="this.style.backgroundColor='#00ee00'">Add Item by AJAX</button>
+
+
     <div class="user-info">
         <h5>Last login session: {{ last_login }}</h5>
         <a href="{% url 'main:logout' %}">
             <button>Logout</button>
         </a>
+    </div>
+</div>
+
+<!-- Add Product Modal -->
+<div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add New Item</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addProductForm">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Name:</label>
+                        <input type="text" class="form-control" id="name" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="value" class="form-label">Value:</label>
+                        <input type="number" class="form-control" id="value" name="value" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description:</label>
+                        <textarea class="form-control" id="description" name="description" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="weight" class="form-label">Weight:</label>
+                        <input type="number" class="form-control" id="weight" name="weight" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="addProductButton">Add Product</button>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -123,12 +163,78 @@
                 }
             });
         });
+    })
+
+    async function getProducts() {
+        return fetch("{% url 'main:get_product_json' %}").then((res) => res.json())
+    }
+
+    async function refreshProducts() {
+        document.getElementById("product_table").innerHTML = ""
+        const products = await getProducts()
+        let htmlString = `<tr>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Description</th>
+            <th>Date Added</th>
+        </tr>`
+        products.forEach((item) => {
+            htmlString += `\n<tr>
+            <td>${item.fields.name}</td>
+            <td>${item.fields.price}</td>
+            <td>${item.fields.description}</td>
+            <td>${item.fields.date_added}</td>
+        </tr>` 
+        })
+        
+        document.getElementById("product_table").innerHTML = htmlString
+    }
+
+    refreshProducts()
+
+    // AJAX request to add a product
+    const addProductForm = document.getElementById('addProductForm');
+    const addProductButton = document.getElementById('addProductButton');
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+    addProductButton.addEventListener('click', () => {
+        const name = document.getElementById('name').value;
+        const value = document.getElementById('value').value;
+        const description = document.getElementById('description').value;
+        const weight = document.getElementById('weight').value;
+
+        // Send an AJAX POST request to /add-product-ajax/
+        fetch('/create-product-ajax/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': csrfToken, // Include the CSRF token
+            },
+            body: `name=${name}&value=${value}&description=${description}&weight=${weight}`,
+        })
+        .then(response => {
+            if (response.status === 201) {
+                // Product created successfully
+                // Close the modal and perform any necessary actions
+                document.getElementById('addProductModal').classList.remove('show');
+                document.getElementById('addProductModal').style.display = 'none';
+                // Clear form inputs if needed
+                document.getElementById('name').value = '';
+                document.getElementById('value').value = '';
+                document.getElementById('description').value = '';
+                document.getElementById('weight').value = '';
+                // Refresh the product list or perform other necessary actions
+                refreshProducts();
+            } else {
+                // Handle errors if necessary
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            // Handle errors if necessary
+        });
     });
 </script>
-
-
-
-
 
 <style>
     .pip-boy-container {
@@ -136,7 +242,7 @@
         flex-direction: column;
         align-items: center;
         font-family: monospace, Arial, sans-serif;
-        color: green;
+        color: #00ee00; /* Updated color to #00ee00 */
     }
 
     h1 {
@@ -158,13 +264,13 @@
     .item-list {
         flex: 1;
         padding-right: 20px;
-        border-right: 1px solid green;
+        border-right: 1px solid #00ee00; /* Updated color to #00ee00 */
     }
 
     .item-list h2 {
         font-size: 20px;
-        background-color: green; /* Add green background color */
-        color: white; /* Set text color to white */
+        background-color: #00ee00; 
+        color: black; /* Set text color to black */
         padding: 5px 10px; /* Add padding for the box */
         border-radius: 5px; /* Add rounded corners */
         cursor: pointer; /* Add cursor style for clicking */
@@ -177,16 +283,17 @@
 
     .item-link {
         text-decoration: none;
-        color: green;
+        color: #00ee00; /* Updated color to #00ee00 */
         font-size: 16px;
         display: block;
         margin-bottom: 10px;
     }
 
     .item-link:hover {
-        background-color: darkgreen;
+        background-color: #00ee00; /* Updated color to #00ee00 */
         padding: 5px;
         border-radius: 5px;
+        color: black;
     }
 
     .item-details {
@@ -196,8 +303,8 @@
 
     .item-details h2 {
         font-size: 20px;
-        background-color: green; /* Add green background color */
-        color: white; /* Set text color to white */
+        background-color: #00ee00; /* Updated color to #00ee00 */
+        color: black; /* Set text color to white */
         padding: 5px 10px; /* Add padding for the box */
         border-radius: 5px; /* Add rounded corners */
     }
@@ -208,7 +315,7 @@
     }
 
     th, td {
-        border: 1px solid green;
+        border: 1px solid #00ee00; /* Updated color to #00ee00 */
         padding: 8px;
         text-align: left;
     }
@@ -227,8 +334,8 @@
     }
 
     button {
-        background-color: green;
-        color: white;
+        background-color: #00ee00; /* Updated color to #00ee00 */
+        color: black;
         font-weight: bold;
         padding: 5px 10px;
         border: none;
@@ -243,6 +350,46 @@
     .new-item-heart {
         color: red; /* You can change the color to your preference */
         margin-left: 5px; /* Adjust the spacing as needed */
+    }
+
+    /* Background color for the modal */
+    .modal-content {
+        background-color: black;
+        border: 2px solid #00ee00; /* Updated color to #00ee00 */
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5); /* Shadow effect */
+    }
+
+    /* Text color inside the modal */
+    .modal-body {
+        color: #00ee00;
+        font-family: monospace; /* Use a monospace font for all text inside the modal body */
+    }
+
+    /* Modal header background color */
+    .modal-header {
+        background-color: #000000; /* Blue color */
+    }
+
+    /* Modal header text color */
+    .modal-header h5 {
+        color: #00ee00;
+    }
+
+    /* Modal footer background color */
+    .modal-footer {
+        background-color: #000000; /* Light gray color */
+    }
+
+    /* Customize buttons */
+    .modal-footer button {
+        background-color: #00ee00; /* Green color */
+        font-family: monospace;
+        color: white;
+    }
+
+    /* Button hover effect */
+    .modal-footer button:hover {
+        background-color: #45a049; /* Darker green on hover */
     }
 </style>
 

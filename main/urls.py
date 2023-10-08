@@ -12,7 +12,9 @@ from main.views import delete_product
 from main.views import show_about
 from main.views import increment_item
 from main.views import decrement_item
-
+from main.views import get_product_json
+from main.views import add_product_ajax
+from . import views
 
 
 app_name = 'main'
@@ -31,5 +33,8 @@ urlpatterns = [
     path('delete/<int:id>', delete_product, name='delete_product'),
     path('about/', show_about, name='about'),
     path('increment/<int:id>', increment_item, name='increment_item'),
+    path('get-product/', get_product_json, name='get_product_json'),
+    path('create-product-ajax/', add_product_ajax, name='add_product_ajax'),
+    path('create-product-ajax/', views.add_product_ajax, name='create_product_ajax'),
 
 ]
