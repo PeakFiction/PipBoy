@@ -315,7 +315,7 @@ The right side of the page displays item details and corresponding actions. This
 
 Both the "Add Item" and "Edit Item" pages share similar design principles. I modified models.py, particularly the description attribute, to limit it to 50 characters, preserving the layout of the item details table on the main page. In line with the login page's design philosophy, I standardized text fields, removing any surrounding text and relying solely on placeholder text to convey their functions. Each text field adopts a light green hue, maintaining simplicity and clarity. The only visual distinction between the pages is the title text and whether the text fields contain pre-existing data in the case of item editing.
 
-# Assignment 5 README.md:
+# Assignment 6 README.md:
 
 ## Explain the difference between asynchronous programming and synchronous programming.
 Asynchronous and synchronous programming are two different ways of executing tasks in computer programs.
