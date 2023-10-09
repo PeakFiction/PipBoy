@@ -61,8 +61,7 @@
         </a>
     </div>
 
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProductModal" style="background-color: #00ee00; color: black; font-weight: bold; box-shadow: none; margin-top: 10px;" onmouseover="this.style.backgroundColor='#006400'" onmouseout="this.style.backgroundColor='#00ee00'">Add Item by AJAX</button>
-
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProductModal" style="background-color: #00ee00; color: black; font-weight: bold; box-shadow: none; margin-top: 10px;" onmouseover="this.style.backgroundColor='#006400'" onmouseout="this.style.backgroundColor='#00ee00'">Add Item by AJAX</button>
 
     <div class="user-info">
         <h5>Last login session: {{ last_login }}</h5>
@@ -77,7 +76,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Add New Item</h5>
+                <h5 class="modal-title" id="exampleModalLabel" style="font-family: monospace;">Add New Item</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -102,8 +101,8 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="addProductButton">Add Product</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="font-family: monospace; color: black; font-weight: bold">Close</button>
+                <button type="button" class="btn btn-primary" id="addProductButton" style="font-family: monospace; color: black; font-weight: bold">Add Item</button>
             </div>
         </div>
     </div>
@@ -114,8 +113,18 @@
     const itemLinks = document.querySelectorAll('.item-link');
     const itemInfos = document.querySelectorAll('.item-info');
     const itemListHeading = document.getElementById('item-list-heading');
+    let isSortedAsc = true; // Variable to track sorting order
 
-    let isSortedAsc = true; // Initial sorting order is ascending
+    // Initialize the initially hovered item to null
+    let hoveredItem = null;
+    let lastHoveredItem = null;
+
+    // Function to hide all item details
+    function hideAllItemDetails() {
+        itemInfos.forEach(info => {
+            info.style.display = 'none';
+        });
+    }
 
     itemListHeading.addEventListener('click', () => {
         // Store the newly added item, if any
@@ -155,46 +164,82 @@
     itemLinks.forEach(link => {
         link.addEventListener('mouseenter', () => {
             const itemId = link.getAttribute('data-id');
+            // Hide all item details first
+            hideAllItemDetails();
             itemInfos.forEach(info => {
                 if (info.getAttribute('data-id') === itemId) {
                     info.style.display = 'table-row';
-                } else {
-                    info.style.display = 'none';
                 }
             });
+            // Set the currently hovered item
+            lastHoveredItem = itemId;
+            // Update the item details table
+            updateItemDetailsTable();
         });
-    })
 
-    async function getProducts() {
-        return fetch("{% url 'main:get_product_json' %}").then((res) => res.json())
+        link.addEventListener('mouseleave', () => {
+            // Reset the currently hovered item when mouse leaves the link
+            lastHoveredItem = null;
+            // Update the item details table to show the last hovered item (if any)
+            updateItemDetailsTable();
+        });
+    });
+
+    // Function to update the item details table based on the hovered item
+    function updateItemDetailsTable() {
+        const itemDetailsTable = document.getElementById('product_table');
+        const items = document.querySelectorAll('.item-info');
+        // Clear the table
+        itemDetailsTable.innerHTML = '';
+        // Add header row
+        itemDetailsTable.innerHTML = `
+            <tr>
+                <th>Name</th>
+                <th>Value</th>
+                <th>Description</th>
+                <th>Weight</th>
+                <th>Actions</th>
+            </tr>
+        `;
+        // Find the item details corresponding to the last hovered item and add it to the table
+        items.forEach(item => {
+            if (lastHoveredItem && item.getAttribute('data-id') === lastHoveredItem) {
+                itemDetailsTable.appendChild(item.cloneNode(true));
+            }
+        });
     }
 
-    async function refreshProducts() {
-        document.getElementById("product_table").innerHTML = ""
-        const products = await getProducts()
-        let htmlString = `<tr>
-            <th>Name</th>
-            <th>Price</th>
-            <th>Description</th>
-            <th>Date Added</th>
-        </tr>`
-        products.forEach((item) => {
-            htmlString += `\n<tr>
-            <td>${item.fields.name}</td>
-            <td>${item.fields.price}</td>
-            <td>${item.fields.description}</td>
-            <td>${item.fields.date_added}</td>
-        </tr>` 
-        })
-        
-        document.getElementById("product_table").innerHTML = htmlString
-    }
+    // Function to refresh the item list with new items
+    function refreshItemList() {
+        // Send an AJAX GET request to retrieve the updated item list
+        fetch('/get-items-ajax/')
+            .then(response => response.json())
+            .then(data => {
+                const itemContainer = document.querySelector('.item-list ul');
+                itemContainer.innerHTML = ''; // Clear the current list
 
-    refreshProducts()
+                // Loop through the new items and add them to the list
+                data.forEach(item => {
+                    const newItem = document.createElement('li');
+                    newItem.innerHTML = `
+                        <a href="#" class="item-link" data-id="${item.pk}">
+                            ${item.name}
+                            ${item.is_new ? '<span class="new-item-heart">♡</span>' : ''}
+                        </a>
+                    `;
+                    itemContainer.appendChild(newItem);
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Handle errors if necessary
+            });
+    }
 
     // AJAX request to add a product
     const addProductForm = document.getElementById('addProductForm');
     const addProductButton = document.getElementById('addProductButton');
+    const addProductModal = new bootstrap.Modal(document.getElementById('addProductModal')); // Get the modal instance
     const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
     addProductButton.addEventListener('click', () => {
@@ -215,16 +260,15 @@
         .then(response => {
             if (response.status === 201) {
                 // Product created successfully
-                // Close the modal and perform any necessary actions
-                document.getElementById('addProductModal').classList.remove('show');
-                document.getElementById('addProductModal').style.display = 'none';
+                // Close the modal
+                addProductModal.hide(); // Use the hide() method to close the modal
                 // Clear form inputs if needed
                 document.getElementById('name').value = '';
                 document.getElementById('value').value = '';
                 document.getElementById('description').value = '';
                 document.getElementById('weight').value = '';
-                // Refresh the product list or perform other necessary actions
-                refreshProducts();
+                // Refresh the item list
+                refreshItemList();
             } else {
                 // Handle errors if necessary
             }
@@ -234,7 +278,14 @@
             // Handle errors if necessary
         });
     });
+
+    // Call the function to initialize the item details table
+    updateItemDetailsTable();
+
+    // Initial call to populate the item list
+    refreshItemList();
 </script>
+
 
 <style>
     .pip-boy-container {

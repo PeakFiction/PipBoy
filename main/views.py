@@ -160,8 +160,8 @@ def decrement_item(request, id):
 
 
 def get_product_json(request):
-    product_item = Product.objects.all()
-    return HttpResponse(serializers.serialize('json', product_item))
+    items = Product.objects.filter(user=request.user)
+    return HttpResponse(serializers.serialize('json', items))
 
 @csrf_exempt
 

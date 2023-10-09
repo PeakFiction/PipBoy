@@ -371,3 +371,23 @@ Ultimately, the decision should be based on your project's specific needs and yo
 
 
 ## Explain how you implemented the checklist above step-by-step (not just following the tutorial).
+
+### Modify the codes in data table to able to use AJAX GET & Retrieve data using AJAX GET.
+To modify the codes in the data table to be able to use AJAX GET, what I did was implemented a function called 'getProducts' that makes an AJAX GET request to the URL specified by {% url 'main:get_product_json' %} and retrieves product data in JSON format. I've also added 'refreshProducts' function that updates the item/product table on my webpage with this data. Both of these 'getProducts' and 'refreshProducts' functions serves to fetch the data, and update the data on the table respectively.
+
+### Create a button that opens a modal with a form for adding an item.
+In the main.html file, I added a button called "Add New Item By AJAX" which triggers a modal with a form for adding an item when clicked. The modal is styled and controlled using Bootstrap classes and JavaScript.
+
+### The modal is triggered by clicking a button on the main page. When adding an item successfully, the modal should be closed, and the form input should be cleared from the data entered before. The behavior of the modal must meet these requirements.
+I did this by adding a Javascript code that handles the opening and closing of the modal, and when the form is successfully submitted, the modal closes and clears the form input fields. I've copied off the template from the tutorial, and changed a few attributes for the objects such that it matches my models.py
+
+### Create a new view function to add a new item to the database.
+I added a function called 'add_product_ajax' in my views.py that handles handles the addition of a new item to the database.
+This view function handles POST requests and expects form data to create a new product record.
+
+### Create a /create-ajax/ path that points to the new view function you created.
+I've since renamed it add_product_ajax instead of create-ajax, but I did make it so that the javascript code in my main.html send a POST request to create
+
+### Connect the form you created inside the modal to the /create-ajax/ path.
+
+### Perform asynchronous refresh on the main page to display the latest item list without reloading the entire main page.
