@@ -381,13 +381,33 @@ In the main.html file, I added a button called "Add New Item By AJAX" which trig
 ### The modal is triggered by clicking a button on the main page. When adding an item successfully, the modal should be closed, and the form input should be cleared from the data entered before. The behavior of the modal must meet these requirements.
 I did this by adding a Javascript code that handles the opening and closing of the modal, and when the form is successfully submitted, the modal closes and clears the form input fields. I've copied off the template from the tutorial, and changed a few attributes for the objects such that it matches my models.py
 
+I used this:
+```
+addProductButton.addEventListener('click', () => {
+    // JavaScript code to handle form submission and modal behavior
+});
+```
+
 ### Create a new view function to add a new item to the database.
 I added a function called 'add_product_ajax' in my views.py that handles handles the addition of a new item to the database.
 This view function handles POST requests and expects form data to create a new product record.
 
 ### Create a /create-ajax/ path that points to the new view function you created.
-I've since renamed it add_product_ajax instead of create-ajax, but I did make it so that the javascript code in my main.html send a POST request to create
+I've since renamed it add_product_ajax instead of create-ajax, but I did make it so that the javascript code in my main.html send a POST request to handle adding new products.
 
 ### Connect the form you created inside the modal to the /create-ajax/ path.
-
+In my JavaScript code within main.html, I specified the path /create-product-ajax/ as the target for the POST request when submitting the form. This corresponds to the add_product_ajax view function, which handles the creation of new product records.
+```
+// Send an AJAX POST request to /create-product-ajax/
+fetch('/create-product-ajax/', {
+    // ...
+})
+.then(response => {
+    if (response.status === 201) {
+        // Product created successfully
+        // ...
+    }
+});
+```
 ### Perform asynchronous refresh on the main page to display the latest item list without reloading the entire main page.
+My JavaScript functions getProducts and refreshProducts are responsible for refreshing the item list on the main page asynchronously. These functions fetch product data from the server and update the item list without a full page reload. To ensure the item list stays up to date, I've called refreshProducts. 
