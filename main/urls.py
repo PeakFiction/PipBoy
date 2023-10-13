@@ -36,5 +36,7 @@ urlpatterns = [
     path('get-product/', get_product_json, name='get_product_json'),
     path('create-product-ajax/', add_product_ajax, name='add_product_ajax'),
     path('create-product-ajax/', views.add_product_ajax, name='create_product_ajax'),
+    path('get-items-ajax/', views.get_items_ajax, name='get_items_ajax'),
+
 
 ]
