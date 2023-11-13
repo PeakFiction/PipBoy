@@ -10,4 +10,5 @@ class Product(models.Model):
     weight = models.IntegerField()
     user = models.ForeignKey(User, on_delete=models.CASCADE)    
     is_new = models.BooleanField(default=True)
+    rarity = models.CharField(max_length=10)
 

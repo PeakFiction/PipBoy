@@ -47,6 +47,7 @@
                             <a href="{% url 'main:delete_product' product.pk %}" class="delete-item-link">
                                 <button>DROP</button>
                             </a>
+
                         </td>
                     </tr>
                 {% endfor %}
@@ -61,6 +62,32 @@
         </a>
     </div>
 
+<form method="get" action="{% url 'main:filterRarity' %}">
+    <div>
+        <a> 
+            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+            <label>
+                R
+            </label>
+        </a>
+    </div>
+    <div>
+        <a> 
+            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+            <label>
+                SR
+            </label>
+        </a>
+    </div>
+    <div>
+        <a> 
+            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+            <label>
+                SSR
+            </label>
+        </a>
+    </div>
+</form>
 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProductModal" style="background-color: #00ee00; color: black; font-weight: bold; box-shadow: none; margin-top: 10px;" onmouseover="this.style.backgroundColor='#006400'" onmouseout="this.style.backgroundColor='#00ee00'">Add Item by AJAX</button>
 
 

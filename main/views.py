@@ -190,3 +190,14 @@ def get_items_ajax(request):
     items = Product.objects.filter(user=request.user)
     data = [{'pk': item.pk, 'name': item.name, 'is_new': item.is_new} for item in items]
     return JsonResponse(data, safe=False)
+
+
+def filterRarity(request):
+    rarities = request.GET.getlist('rarity')
+    
+    items = Product.objects.all()
+    
+    if rarities:
+        items = items.filter(rarity__in=rarities)
+        
+    return render(request, 'main.html', {'items': items})
