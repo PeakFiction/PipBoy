@@ -38,7 +38,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="/Users/muhammad.sakhran/Documents/UI/Semester 3/Platform-Based Development/Assignments/Assignment 02/PipBoy/env"
+VIRTUAL_ENV="/Users/muhammad.sakhran/Documents/UI/Semester 3/Platform-Based Development/PipBoyProper/PipBoy/env"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"
