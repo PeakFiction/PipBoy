@@ -22,5 +22,6 @@ urlpatterns = [
     path('', include('main.urls')),
     path('admin/', admin.site.urls),
     path("__reload__/", include("django_browser_reload.urls")),
+    path('auth/', include('authentication.urls'))
 
 ]

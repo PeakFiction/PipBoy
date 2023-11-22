@@ -190,3 +190,31 @@ def get_items_ajax(request):
     items = Product.objects.filter(user=request.user)
     data = [{'pk': item.pk, 'name': item.name, 'is_new': item.is_new} for item in items]
     return JsonResponse(data, safe=False)
+
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
+from .models import Product
+from django.contrib.auth.decorators import login_required
+
+
+@csrf_exempt
+@login_required
+def create_product_flutter(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+
+        new_product = Product.objects.create(
+            user=request.user,
+            name=data["name"],
+            value=int(data["value"]),
+            description=data["description"],
+            weight=int(data["weight"]),
+            is_new=bool(data["is_new"])
+        )
+
+        new_product.save()
+
+        return JsonResponse({"status": "success"}, status=200)
+    else:
+        return JsonResponse({"status": "error"}, status=401)

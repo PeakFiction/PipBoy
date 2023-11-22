@@ -6,3 +6,5 @@ requests
 urllib3
 django-environ
 tailwind
+django_browser_reload
+django-cors-headers
